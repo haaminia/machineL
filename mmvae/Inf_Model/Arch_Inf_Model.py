@@ -12,33 +12,38 @@ class VAE(nn.Module):
         super(VAE, self).__init__()
         # Encoder
         self.encoder = nn.Sequential(
-            nn.Linear(60664, 1024),
+            nn.Linear(60664, 16384),
             nn.ReLU(),
-            nn.BatchNorm1d(1024, 0.8),
-            nn.Linear(1024, 768),
+            nn.BatchNorm1d(16384, 0.8),
+            nn.Linear(16384, 8192 ),
             nn.ReLU(),
-            nn.BatchNorm1d(768, 0.8),
-            nn.Linear(768, 256),
+            nn.BatchNorm1d(8192, 0.8),
+            nn.Linear(8192 , 2048),
             nn.ReLU(),
-            nn.BatchNorm1d(256, 0.8)
+            nn.BatchNorm1d(2048, 0.8),
+            nn.Linear(2048 , 400),
+            nn.ReLU(),
         )
         
-        self.fc_mu = nn.Linear(256, 128)
-        self.fc_var = nn.Linear(256, 128)
+        self.fc_mu = nn.Linear(400, 128)
+        self.fc_var = nn.Linear(400, 128)
         
         # Decoder
         self.decoder = nn.Sequential(
-            nn.Linear(128, 256),
+            nn.Linear(128, 400),
             nn.ReLU(),
-            nn.BatchNorm1d(256, 0.8),
-            nn.Linear(256, 768),
+            nn.BatchNorm1d(400, 0.8),
+            nn.Linear(400, 2048),
             nn.ReLU(),
-            nn.BatchNorm1d(768, 0.8),
-            nn.Linear(768, 1024),
+            nn.BatchNorm1d(2048, 0.8),
+            nn.Linear(2048, 8192),
             nn.ReLU(),
-            nn.BatchNorm1d(1024, 0.8),
-            nn.Linear(1024, 60664),
-            nn.Sigmoid(),
+            nn.BatchNorm1d(8192, 0.8),
+            nn.Linear(8192, 16384),
+            nn.ReLU(),
+            nn.BatchNorm1d(16384, 0.8),
+            nn.Linear(16384, 60664),
+            nn.ReLU(),
         )
 
         utils._submodules_init_weights_xavier_uniform_(self.encoder)
